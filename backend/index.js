@@ -12,8 +12,10 @@ io.on("connection", (socket) => {
     /*//send response to client
    socket.emit("welcome" )*/
 
-   socket.broadcast.emit("new-user", {title: "a user joined", joinDate: new Date()})
-
+//   socket.broadcast.emit("new-user", {title: "a user joined", joinDate: new Date()})
+    socket.on("new-rgb", (message) => {
+        console.log(message);
+    })
    socket.on("disconnect", () => console.log("a user disconnected"));
 });
 
