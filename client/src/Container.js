@@ -1,13 +1,16 @@
 import React, {useEffect, useContext} from 'react'
 import RGB from './components/RGB';
-import {initSocket, disconnect, sendRGB} from './socketservice';
+import {initSocket, disconnect, sendRGB, getNewBackground} from './socketservice';
 import BackgroundContext from './contexts/BackgroundContext';
 import styles from './styles.module.css';
 function Container() {
     
-    const {bgCode}  = useContext(BackgroundContext);
+    const {bgCode, setBgCode}  = useContext(BackgroundContext);
     useEffect(() => {
         initSocket( )
+        getNewBackground((message) => {
+            setBgCode(message)
+        })
         //  setTimeout(() => {
         //     sendRGB("mesaj")
         // }, 3000)

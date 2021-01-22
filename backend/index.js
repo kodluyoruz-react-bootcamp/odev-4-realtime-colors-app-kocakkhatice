@@ -14,7 +14,8 @@ io.on("connection", (socket) => {
 
 //   socket.broadcast.emit("new-user", {title: "a user joined", joinDate: new Date()})
     socket.on("new-rgb", (message) => {
-        console.log(message);
+        console.log("new-rgb: " + message);
+        socket.broadcast.emit("get-rgb", message);
     })
    socket.on("disconnect", () => console.log("a user disconnected"));
 });

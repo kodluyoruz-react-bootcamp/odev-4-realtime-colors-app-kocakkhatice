@@ -21,3 +21,11 @@ export const sendRGB = (message) => {
     if(socket) socket.emit("new-rgb", message)
 
 } 
+
+export const getNewBackground = (cb) => {
+    if(!socket) return true;
+    socket.on('get-rgb', (message) => {
+        cb(message)
+    })
+
+}
