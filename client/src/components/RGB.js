@@ -1,26 +1,28 @@
-import {useState, useContext} from 'react'
-import {sendRGB} from '../socketservice';
+import {useState, useContext, useEffect } from 'react'
+import {sendRGB, sendCodeandUser,sendUserName} from '../socketservice';
 import BackgroundContext from '../contexts/BackgroundContext';
 import styles from '../styles.module.css';
 import reactCSS from 'reactcss'
 import {SketchPicker} from 'react-color';
 function RGB() {
-    const [rgbCode, setRgbCode] = useState('');
-    const {bgCode, setBgCode} = useContext(BackgroundContext);
+    const [rgbCode, setRgbCode] = useState("");
+    const {bgCode, setBgCode, username} = useContext(BackgroundContext);
     const [displayColorPicker, setDisplayColorPicker] = useState(false);
     
     const colorChangeSubmit = () => {
-        setDisplayColorPicker(!displayColorPicker)
-        setBgCode(rgbCode);
-        console.log("bgCode => " + bgCode);
-        sendRGB(bgCode);        
-
+      setDisplayColorPicker(!displayColorPicker);
     }
-    const handleClick = () => {
-        setDisplayColorPicker(!displayColorPicker);
+    const applyNewColor = async () => {
+      await setBgCode(rgbCode);
     }
-    const handleClose = () => {
-        setDisplayColorPicker(false);
+    useEffect ( () => {
+      sendCodeandUser( {username, bgCode});
+    }, [bgCode])
+    const handlePickerOpen = () => {
+      setDisplayColorPicker(!displayColorPicker);
+    }
+    const handlePickerClose = () => {
+      setDisplayColorPicker(false);
     }
     const styles = reactCSS({
         'default': {
@@ -54,20 +56,19 @@ function RGB() {
    
 
     return (
-        <div>
-            <div style={ styles.swatch } onClick={ handleClick }>
+        <div style = { {border: "1px solid red", width:"200px", height:"200px" , margin: "auto"}   }>
+            <div style={ styles.swatch } onClick={ handlePickerOpen }>
                 <div style= {styles.color } />
             </div>
             { 
                 displayColorPicker ? 
-                    <div style={ styles.popover }>
-                         <div style={ styles.cover } onClick={ handleClose }/> 
+                    <div style={ styles.popover } >
+                         <div style={ styles.cover } onClick={ handlePickerClose }/> 
                             <SketchPicker 
                                 color = {rgbCode} 
                                 onChange = {
                                     (color) => {
-                                        console.log("sketchpicker: " + color.hex)
-                                        setRgbCode(color.hex);
+                                      setRgbCode(color.hex); 
                                     }
                                 }/>
                     </div> 
@@ -75,6 +76,7 @@ function RGB() {
                      null
              }
             <button onClick={colorChangeSubmit}>Change color</button>
+            <button onClick={applyNewColor}>Apply</button>
 
         </div>
  
@@ -106,3 +108,6 @@ export default RGB
     //     bottom: '0px',
     //     left: '0px',
     //   }
+
+
+     {/*onClick={ handleClose }*/ }

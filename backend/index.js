@@ -8,18 +8,36 @@ app.get("/", (req, res) => {
 
 });
 //connection listening 
-io.on("connection", (socket) => {
-    /*//send response to client
-   socket.emit("welcome" )*/
-
-//   socket.broadcast.emit("new-user", {title: "a user joined", joinDate: new Date()})
-    socket.on("new-rgb", (message) => {
-        console.log("new-rgb: " + message);
-        socket.broadcast.emit("get-rgb", message);
+io.on("connection", (socket) => { 
+    console.log("a user connected")  
+    socket.on("disconnect", () => console.log("a user disconnected"));
+ 
+    socket.on("send-code-and-user", ({username, bgCode } )=> {
+        let  msg = "" ;
+        let uName = "";
+        const bgcodeLength = bgCode.length;
+        if (bgcodeLength > 0 ){
+            uName = username;
+            msg = "username: " + uName + " bgCode: "+ bgCode;
+        }
+        else{
+            msg =  username + " is joined";
+        }
+         
+        console.log(msg);
+        socket.broadcast.emit("receive-code-and-username", { bgCode , msg} )
     })
-   socket.on("disconnect", () => console.log("a user disconnected"));
+
+
+
+
+
+
+
+
+
 });
 
-http.listen(4000, () => {
-    console.log("listening at 4000");
+http.listen(process.env.PORT, () => {
+    console.log("listening process.env.PORT");
 })

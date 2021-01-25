@@ -1,31 +1,29 @@
 import io from 'socket.io-client';
 
-let socket;
+let socket; 
 
 export const initSocket = () => {
     socket = io('http://localhost:4000',{
         transports: ['websocket'],
-
-    })
-    
-    console.log('connecting');
-    socket.on('connect', () => console.log('connected'))
-
+    }) 
+    socket.on('connect', () => console.log('connected to server')) 
 }
 
 export const disconnect = () =>{
     console.log("disconnecting")
     if (socket) socket.disconnect();
 }
-export const sendRGB = (message) => {
-    if(socket) socket.emit("new-rgb", message)
 
-} 
-
-export const getNewBackground = (cb) => {
-    if(!socket) return true;
-    socket.on('get-rgb', (message) => {
-        cb(message)
-    })
-
+ 
+export const sendCodeandUser = ({username, bgCode} ) =>{
+    if(socket) socket.emit("send-code-and-user", ({username, bgCode} ) )
 }
+//degişiklikleri almak için subscribe metodu
+export const subscribeToChanges = (cb ) => {
+    if(!socket) return true;
+    socket.on('receive-code-and-username', ( {bgCode, msg}) => {
+        cb(  { bgCode, msg} ); 
+    } ) 
+}
+
+ 
