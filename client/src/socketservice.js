@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 let socket; 
 
 export const initSocket = () => {
-    socket = io('http://localhost:4000',{
+    socket = io('https://change-background.herokuapp.com:443',{
         transports: ['websocket'],
     }) 
     socket.on('connect', () => console.log('connected to server')) 
